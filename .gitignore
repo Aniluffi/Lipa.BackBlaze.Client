@@ -1,17 +1,76 @@
-# Compiled
-*.elc
+# =========================
+# .NET / C#
+# =========================
 
-# Packaging
-.cask/
-.eask/
-.eldev/
-.keg/
+# Build results
+bin/
+obj/
+out/
 
-# Built distribution
+# Visual Studio
+.vs/
+*.user
+*.userosscache
+*.suo
+*.rsuser
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+.nuget/
+
+# Publish output
+publish/
+
+# Coverage
+coverage/
+*.coverage
+*.coveragexml
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# Environment files
+.env
+.env.*
+
+# EF Core
+Migrations/*.Designer.cs
+Migrations/*.resx
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Rider / ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# BenchmarkDotNet
+BenchmarkDotNet.Artifacts/
+
+# Node (if frontend exists)
+node_modules/
 dist/
-
-# Backup files
-*~
-
-# Undo-tree save-files
-*.~undo-tree
