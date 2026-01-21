@@ -1,10 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>Lipa.BackBlaze.Client</PackageId>
+		<Version>8.0.2</Version>
+		<Authors>Lipa</Authors>
+		<Company>Lipa</Company>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/Aniluffi/Back-Blaze_Nuget.git</RepositoryUrl>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>
+			8.0.2 - Добавлены настройки .csproj.
+			8.0.1 - Доработана для публикации в Nuget.
+			8.0.0 - Библиотека для работы с BackBlaze B2 Cloud Storage.
+		</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Подключаем README.md из корня репозитория -->
+		<None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Чтобы NuGet включал зависимости автоматически -->
+		<IncludeSymbols>true</IncludeSymbols>
+		<IncludeSource>true</IncludeSource>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Google.Apis.Auth" Version="1.72.0" />
