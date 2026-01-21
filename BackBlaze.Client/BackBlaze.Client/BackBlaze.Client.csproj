@@ -6,13 +6,14 @@
 		<Nullable>enable</Nullable>
 		<PackageId>Lipa.BackBlaze.Client</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>8.0.2</Version>
+		<Version>8.0.3</Version>
 		<Authors>Lipa</Authors>
 		<Company>Lipa</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Aniluffi/Back-Blaze_Nuget.git</RepositoryUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>
+			8.0.3 - Добавлен Readme.md.
 			8.0.2 - Добавлены настройки .csproj.
 			8.0.1 - Доработана для публикации в Nuget.
 			8.0.0 - Библиотека для работы с BackBlaze B2 Cloud Storage.
