@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>Lipa.BackBlaze.Client</PackageId>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>8.0.2</Version>
 		<Authors>Lipa</Authors>
 		<Company>Lipa</Company>
