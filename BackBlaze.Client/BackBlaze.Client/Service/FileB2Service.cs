@@ -80,7 +80,8 @@ namespace BackBlaze.Client.Service
 
                 using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
 
-                httpRequest.Headers.Add("Authorization", auth.authorizationToken);
+                // Этот метод добавляет заголовок "как есть", игнорируя любые проверки формата .NET
+                httpRequest.Headers.TryAddWithoutValidation("Authorization", auth.authorizationToken);
 
                 using var httpClient = new System.Net.Http.HttpClient();
                 using var httpResponse = await httpClient.SendAsync(httpRequest);
@@ -120,15 +121,105 @@ namespace BackBlaze.Client.Service
         /// </summary>
         public async Task<BaseResponse<B2DownloadFileByNameResponse>> B2DownloadFileByName(B2DownloadFileByNameRequest request)
         {
-            var auth = await _backblazeAuthService.GetAuthAsync();
+            var response = new BaseResponse<B2DownloadFileByNameResponse>();
 
-            _httpClient = new Http.Client.Service.HttpClient(auth.apiInfo.storageApi.apiUrl, new Http.Client.Models.Header
+            // Создаем экземпляры, которые будут переданы в Response для последующего Dispose
+            HttpClient? httpClient = null;
+            HttpResponseMessage? httpResponse = null;
+
+            try
             {
-                TypeAuth = "",
-                AccessToken = auth.authorizationToken,
-            }, _httpClientOptions);
+                var auth = await _backblazeAuthService.GetAuthAsync();
 
-            var response = await _httpClient.SendAsync<B2DownloadFileByNameResponse, B2DownloadFileByNameRequest>($"/file/{request.bucketName}/{request.fileName}", HttpMethod.Get, request);
+                // 1. Формируем URL (используем apiUrl или downloadUrl из авторизации)
+                var baseUrl = auth.apiInfo.storageApi.downloadUrl;
+
+                var url = $"{baseUrl.TrimEnd('/')}/file/{Uri.EscapeDataString(request.BucketName)}/";
+
+                // Экранируем спецсимволы в имени файла, сохраняя структуру папок '/'
+                var escapedFileName = string.Join("/", request.FileName.Split('/').Select(Uri.EscapeDataString));
+                url += escapedFileName;
+
+                // 2. Сборка Query-параметров
+                var queryParams = new List<string>();
+
+                if (!string.IsNullOrEmpty(request.Authorization))
+                    queryParams.Add($"Authorization={Uri.EscapeDataString(request.Authorization)}");
+                if (!string.IsNullOrEmpty(request.B2CacheControl))
+                    queryParams.Add($"b2CacheControl={Uri.EscapeDataString(request.B2CacheControl)}");
+                if (!string.IsNullOrEmpty(request.B2ContentDisposition))
+                    queryParams.Add($"b2ContentDisposition={Uri.EscapeDataString(request.B2ContentDisposition)}");
+                if (!string.IsNullOrEmpty(request.B2ContentEncoding))
+                    queryParams.Add($"b2ContentEncoding={Uri.EscapeDataString(request.B2ContentEncoding)}");
+                if (!string.IsNullOrEmpty(request.B2ContentLanguage))
+                    queryParams.Add($"b2ContentLanguage={Uri.EscapeDataString(request.B2ContentLanguage)}");
+                if (!string.IsNullOrEmpty(request.B2ContentType))
+                    queryParams.Add($"b2ContentType={Uri.EscapeDataString(request.B2ContentType)}");
+                if (!string.IsNullOrEmpty(request.B2Expires))
+                    queryParams.Add($"b2Expires={Uri.EscapeDataString(request.B2Expires)}");
+
+                if (queryParams.Any())
+                {
+                    url += "?" + string.Join("&", queryParams);
+                }
+
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
+
+                // 3. Авторизация через Header (если не передана в URL)
+                if (string.IsNullOrEmpty(request.Authorization))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("Authorization", auth.authorizationToken);
+                }
+
+                // Опциональные заголовки (Range и SSE-C шифрование)
+                if (!string.IsNullOrEmpty(request.Range))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("Range", request.Range);
+                }
+                if (!string.IsNullOrEmpty(request.XBzServerSideEncryptionCustomerAlgorithm))
+                {
+                    httpRequest.Headers.TryAddWithoutValidation("X-Bz-Server-Side-Encryption-Customer-Algorithm", request.XBzServerSideEncryptionCustomerAlgorithm);
+                    httpRequest.Headers.TryAddWithoutValidation("X-Bz-Server-Side-Encryption-Customer-Key", request.XBzServerSideEncryptionCustomerKey);
+                    httpRequest.Headers.TryAddWithoutValidation("X-Bz-Server-Side-Encryption-Customer-Key-Md5", request.XBzServerSideEncryptionCustomerKeyMd5);
+                }
+
+                // Инициализируем HttpClient
+                httpClient = new HttpClient();
+
+                // Скачиваем только заголовки (ResponseHeadersRead)
+                httpResponse = await httpClient.SendAsync(httpRequest, HttpCompletionOption.ResponseHeadersRead);
+
+                if (httpResponse.IsSuccessStatusCode || httpResponse.StatusCode == System.Net.HttpStatusCode.PartialContent)
+                {
+                    var networkStream = await httpResponse.Content.ReadAsStreamAsync();
+
+                    response.Data = new B2DownloadFileByNameResponse
+                    {
+                        ContentStream = networkStream,
+                        HttpResponse = httpResponse, // Передаем наверх для очистки после чтения стрима
+                        ContentType = httpResponse.Content.Headers.ContentType?.ToString() ?? "",
+                        ContentLength = httpResponse.Content.Headers.ContentLength,
+                        FileId = GetHeaderValue(httpResponse, "X-Bz-File-Id"),
+                        FileName = Uri.UnescapeDataString(GetHeaderValue(httpResponse, "X-Bz-File-Name") ?? request.FileName),
+                        ContentSha1 = GetHeaderValue(httpResponse, "X-Bz-Content-Sha1"),
+                        UploadTimestamp = GetHeaderValue(httpResponse, "X-Bz-Upload-Timestamp"),
+                        ContentDisposition = GetHeaderValue(httpResponse, "Content-Disposition"),
+                        ServerSideEncryption = GetHeaderValue(httpResponse, "X-Bz-Server-Side-Encryption")
+                    };
+                }
+                else
+                {
+                    response.ErrorMessage = await httpResponse.Content.ReadAsStringAsync();
+                    httpResponse.Dispose();
+                    httpClient.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessage = ex.Message;
+                httpResponse?.Dispose();
+                httpClient?.Dispose();
+            }
 
             return response;
         }

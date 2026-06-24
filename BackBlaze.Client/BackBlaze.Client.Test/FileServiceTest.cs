@@ -86,8 +86,8 @@ namespace BackBlaze.Client.Test
         {
             var downoloadFile = await _fileService.B2DownloadFileByName(new B2DownloadFileByNameRequest
             {
-                fileName = "mashina_neon_podsvetka_158672_3840x2160.jpg",
-                bucketName = "staffIofiles"
+                FileName = "mashina_neon_podsvetka_158672_3840x2160.jpg",
+                BucketName = "staffIofiles"
             });
 
             Assert.True(downoloadFile.IsSusses);
