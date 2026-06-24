@@ -1,0 +1,15 @@
+﻿namespace BackBlaze.Client.IService.Models.Request
+{
+    public class B2DeleteFileVersionRequest
+    {
+        /// <summary>
+        /// номер файла
+        /// </summary>
+        public string fileId { get; set; }
+
+        /// <summary>
+        /// название файла
+        /// </summary>
+        public string fileName { get; set; }
+    }
+}

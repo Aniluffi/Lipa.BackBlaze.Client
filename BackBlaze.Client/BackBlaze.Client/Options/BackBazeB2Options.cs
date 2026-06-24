@@ -1,7 +1,7 @@
 ﻿namespace BackBlaze.Client.Options
 {
     /// <summary>
-    /// настройки для авторизации google
+    /// настройки для авторизации B2
     /// </summary>
     public class BackBazeB2Options
     {
