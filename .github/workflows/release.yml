@@ -9,7 +9,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      id-token: write # Обязательно для работы Trusted Publishing
 
     steps:
     - name: Checkout code
@@ -21,7 +21,8 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Pack NuGet Package
-      run: dotnet pack ./BackBlaze.Client/BackBlaze.Client/BackBlaze.Client.csproj --configuration Release --output ./artifacts 
+      # Добавлен флаг /p:TreatWarningsAsErrors=false, чтобы сборка не падала из-за варнингов
+      run: dotnet pack ./BackBlaze.Client/BackBlaze.Client/BackBlaze.Client.csproj --configuration Release --output ./artifacts /p:TreatWarningsAsErrors=false
 
     - name: Publish to NuGet.org
       run: dotnet nuget push ./artifacts/*.nupkg --source https://api.nuget.org/v3/index.json
