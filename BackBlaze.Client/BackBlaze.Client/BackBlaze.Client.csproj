@@ -6,14 +6,14 @@
 		<Nullable>enable</Nullable>
 		<PackageId>Lipa.BackBlaze.ClientV2</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<Version>9.0.1</Version>
+		<Version>9.0.2</Version>
 		<Authors>Lipa</Authors>
 		<Company>Lipa</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/Aniluffi/Back-Blaze_Nuget.git</RepositoryUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>
-			9.0.1 - создан нугет для работы с BackBlaze B2
+			9.0.2 - создан нугет для работы с BackBlaze B2
 		</Description>
 	</PropertyGroup>
 
