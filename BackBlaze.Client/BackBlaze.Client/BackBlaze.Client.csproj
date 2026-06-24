@@ -4,7 +4,7 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PackageId>Lipa.BackBlaze.Client</PackageId>
+		<PackageId>Lipa.BackBlaze.ClientV2</PackageId>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<Version>9.0.1</Version>
 		<Authors>Lipa</Authors>
@@ -13,12 +13,7 @@
 		<RepositoryUrl>https://github.com/Aniluffi/Back-Blaze_Nuget.git</RepositoryUrl>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>
-			9.0.1 - добавлены методы для работы с файлами
-			9.0.0 - добавлены методы для работы с файлами
-			8.0.3 - Добавлен Readme.md.
-			8.0.2 - Добавлены настройки .csproj.
-			8.0.1 - Доработана для публикации в Nuget.
-			8.0.0 - Библиотека для работы с BackBlaze B2 Cloud Storage.
+			9.0.1 - создан нугет для работы с BackBlaze B2
 		</Description>
 	</PropertyGroup>
 
